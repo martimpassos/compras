@@ -26,7 +26,7 @@ export default function ShoppingList({
           >
             <Checkbox
               id={product.name}
-            //   checked={product.checked}
+              checked={product.checked}
               onCheckedChange={(checked) => {
                 setProducts(
                   products.map((p) =>
