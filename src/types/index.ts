@@ -10,10 +10,12 @@ export interface InputFormProps {
   setProductToAdd: Dispatch<SetStateAction<string>>;
   products: Product[];
   productToAdd: string;
+  addProduct: (product: Product) => void;
 }
 
 export interface ShoppingListProps {
   setProducts: Dispatch<SetStateAction<Product[]>>;
   products: Product[];
   productToAdd: string;
+  updateProduct: (product: Product) => void;
 }

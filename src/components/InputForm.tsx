@@ -7,6 +7,7 @@ export default function InputForm({
   setProductToAdd,
   products,
   productToAdd,
+  addProduct,
 }: InputFormProps) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,7 +25,9 @@ export default function InputForm({
     } else {
       const titleCase =
         trimmedProduct.charAt(0).toUpperCase() + trimmedProduct.slice(1);
-      setProducts([...products, { name: titleCase, checked: false }]);
+      const product = { name: titleCase, checked: false };
+      setProducts([...products, product]);
+      addProduct(product);
       setProductToAdd("");
     }
   }

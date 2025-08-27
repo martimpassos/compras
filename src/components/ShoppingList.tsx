@@ -5,7 +5,8 @@ import type { ShoppingListProps } from "@/types";
 export default function ShoppingList({
   products,
   productToAdd,
-  setProducts
+  setProducts,
+  updateProduct
 }: ShoppingListProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
@@ -20,8 +21,8 @@ export default function ShoppingList({
               isFiltered ? "opacity-0" : "opacity-100"
             }`}
             key={product.name}
-            style={{ 
-                order: (isFiltered ? 2 : 0) + (product.checked ? 1 : 0)
+            style={{
+              order: (isFiltered ? 2 : 0) + (product.checked ? 1 : 0),
             }}
           >
             <Checkbox
@@ -30,9 +31,12 @@ export default function ShoppingList({
               onCheckedChange={(checked) => {
                 setProducts(
                   products.map((p) =>
-                    p.name === product.name ? { ...p, checked: checked === true } : p
-                  )
+                    p.name === product.name
+                      ? { ...p, checked: checked === true }
+                      : p,
+                  ),
                 );
+                updateProduct({ ...product, checked: checked === true });
               }}
               className="mr-2"
             />
