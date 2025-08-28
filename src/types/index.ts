@@ -19,3 +19,7 @@ export interface ShoppingListProps {
   productToAdd: string;
   updateProduct: (product: Product) => void;
 }
+
+export interface LoginFormProps {
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+}

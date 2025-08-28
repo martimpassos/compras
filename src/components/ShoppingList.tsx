@@ -6,7 +6,7 @@ export default function ShoppingList({
   products,
   productToAdd,
   setProducts,
-  updateProduct
+  updateProduct,
 }: ShoppingListProps) {
   return (
     <div className="grid grid-cols-2 gap-2">
