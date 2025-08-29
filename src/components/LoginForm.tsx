@@ -4,7 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import type { LoginFormProps } from "@/types";
 import { useState } from "react";
 
-export default function InputForm({setIsLoggedIn}: LoginFormProps) {
+export default function LoginForm({setIsLoggedIn}: LoginFormProps) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
