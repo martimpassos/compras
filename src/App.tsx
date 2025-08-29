@@ -47,7 +47,7 @@ function App() {
         setProducts(Object.values(data));
       }
     });
-  }, [db]);
+  }, [db, isLoggedIn]);
   
   useEffect(() => {
     const auth = getAuth();
@@ -65,7 +65,7 @@ function App() {
     // Clean up the subscription
     return () => unsubscribe();
   }, []);
-  
+
   return (
     <div className="p-8 max-h-screen grid grid-rows-[auto_1fr]">
       {!isLoggedIn ? (
