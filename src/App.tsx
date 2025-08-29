@@ -7,8 +7,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, update, onValue } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-function App() {
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "compras-c0bf9.firebaseapp.com",
     databaseURL: import.meta.env.VITE_FIREBASE_DB_URL,
@@ -19,13 +18,19 @@ function App() {
     measurementId: "G-Z2R57EGX1K",
   };
 
-  // Initialize Firebase
+function App() {
+  
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
   const [productToAdd, setProductToAdd] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [authLoading, setAuthLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(false);
+
+  const isLoading = authLoading || (isLoggedIn && productsLoading);
 
   const addProduct = (product: Product) => {
     const newProductRef = ref(db, `products/${product.name}`);
@@ -34,41 +39,44 @@ function App() {
 
   const updateProduct = (product: Product) => {
     const itemRef = ref(db, `products/${product.name}`);
-    update(itemRef, {
-      checked: product.checked,
-    });
+    update(itemRef, { checked: product.checked });
   };
 
-  useEffect(() => {
-    const productsRef = ref(db, "products");
-    onValue(productsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setProducts(Object.values(data));
-      }
-    });
-  }, [db, isLoggedIn]);
-  
+  // listen for auth changes
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        setIsLoggedIn(true);
-        // You can get the user's ID: user.uid
-      } else {
-        // User is signed out
-        setIsLoggedIn(false);
-      }
+      setIsLoggedIn(!!user);
+      setAuthLoading(false); // auth check done
     });
-
-    // Clean up the subscription
     return () => unsubscribe();
   }, []);
 
+  // listen for products only if logged in
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    setProductsLoading(true);
+    const productsRef = ref(db, "products");
+
+    const unsubscribe = onValue(productsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setProducts(Object.values(data));
+      } else {
+        setProducts([]);
+      }
+      setProductsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [db, isLoggedIn]);
+
   return (
     <div className="p-8 max-h-screen grid grid-rows-[auto_1fr]">
-      {!isLoggedIn ? (
+      {isLoading ? (
+        <p>Carregando...</p>
+      ) : !isLoggedIn ? (
         <LoginForm 
           setIsLoggedIn={setIsLoggedIn}
         />
@@ -91,9 +99,6 @@ function App() {
               setProducts={setProducts}
               updateProduct={updateProduct}
             />
-            {/* <p className="read-the-docs">
-            Click on the Vite and React logos to learn more
-          </p> */}
           </div>
         </>
       )}
