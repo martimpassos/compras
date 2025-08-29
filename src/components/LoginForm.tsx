@@ -23,7 +23,7 @@ export default function InputForm({setIsLoggedIn}: LoginFormProps) {
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.error("Login error", errorCode, errorMessage);
+            alert("Erro ao fazer login: " + errorCode + errorMessage);
         });
     }
 
